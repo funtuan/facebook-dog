@@ -38,7 +38,6 @@ class FacebookDog {
             }
             const lan = await this.getPostsLength();
             while (i < lan) {
-                await this.clickAllSeeMore()
                 const post = await this.getOnePost(i);
                 posts.push(post)
                 i++;
@@ -58,6 +57,9 @@ class FacebookDog {
     async getOnePost(index) {
         const post = await this.page.evaluate((index) => {
             const postDocument = document.querySelectorAll('.userContentWrapper')[index];
+            try {
+                postDocument.querySelector('.see_more_link_inner').click()
+            } catch (error) {}
             const data = {
                 herf: postDocument.querySelector('abbr').parentElement.href,
                 utime: parseInt(postDocument.querySelector('abbr').dataset.utime),
@@ -76,16 +78,6 @@ class FacebookDog {
         }, index);
 
         return post;
-    }
-
-    async clickAllSeeMore() {
-        await this.page.evaluate(() => {
-            for (let i = 0; i < document.querySelectorAll('.see_more_link_inner').length; i++) {
-                try {
-                    document.querySelectorAll('.see_more_link_inner')[i].click()
-                } catch (error) {}
-            }
-        });
     }
 
     async scrollToBottom() {
