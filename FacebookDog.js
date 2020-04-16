@@ -36,9 +36,7 @@ class FacebookDog {
             if (i !== 0) {
                 await this.delay(8000);
             }
-            const lan = await this.page.evaluate(() => {
-                return document.querySelectorAll('.userContentWrapper').length
-            });
+            const lan = await this.getPostsLength();
             while (i < lan) {
                 await this.clickAllSeeMore()
                 const post = await this.getOnePost(i);
@@ -48,6 +46,13 @@ class FacebookDog {
             }
         }
         return posts;
+    }
+
+    async getPostsLength() {
+        const length = await this.page.evaluate(() => {
+            return document.querySelectorAll('.userContentWrapper').length
+        });
+        return length;
     }
 
     async getOnePost(index) {
