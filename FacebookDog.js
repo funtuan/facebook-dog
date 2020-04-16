@@ -70,6 +70,7 @@ class FacebookDog {
                 },
                 text: postDocument.querySelector('div[data-testid=post_message]').innerText,
                 image: [],
+                like: parseInt(postDocument.querySelector('span[data-hover=tooltip]').children[0].getAttribute("aria-label").replace('讚', '')),
             }
             postDocument.querySelectorAll('.uiScaledImageContainer').forEach(one => {
                 data.image.push(one.children[0].src)
