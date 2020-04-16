@@ -40,37 +40,53 @@ class FacebookDog {
                 return document.querySelectorAll('.userContentWrapper').length
             });
             while (i < lan) {
-                const post = await this.page.evaluate((index) => {
-                    for (let i = 0; i < document.querySelectorAll('.see_more_link_inner').length; i++) {
-                        try {
-                            document.querySelectorAll('.see_more_link_inner')[i].click()
-                        } catch (error) {}
-                    }
-                    const postDocument = document.querySelectorAll('.userContentWrapper')[index];
-                    const data = {
-                        herf: postDocument.querySelector('abbr').parentElement.href,
-                        utime: parseInt(postDocument.querySelector('abbr').dataset.utime),
-                        author: {
-                            herf: postDocument.querySelectorAll('a')[1].href,
-                            name: postDocument.querySelector('.fcg').innerText,
-                            icon: postDocument.querySelectorAll('img')[0],
-                        },
-                        text: postDocument.querySelector('div[data-testid=post_message]').innerText,
-                        image: [],
-                    }
-                    postDocument.querySelectorAll('.uiScaledImageContainer').forEach(one => {
-                        data.image.push(one.children[0].src)
-                    })
-                    return data;
-                }, i);
+                await this.clickAllSeeMore()
+                const post = await this.getOnePost(i);
                 posts.push(post)
                 i++;
+                await this.scrollToBottom()
             }
-            await this.page.evaluate(() => {
-                window.scroll(0, 99999999)
-            });
         }
         return posts;
+    }
+
+    async getOnePost(index) {
+        const post = await this.page.evaluate((index) => {
+            const postDocument = document.querySelectorAll('.userContentWrapper')[index];
+            const data = {
+                herf: postDocument.querySelector('abbr').parentElement.href,
+                utime: parseInt(postDocument.querySelector('abbr').dataset.utime),
+                author: {
+                    herf: postDocument.querySelectorAll('a')[1].href,
+                    name: postDocument.querySelector('.fcg').innerText,
+                    icon: postDocument.querySelectorAll('img')[0],
+                },
+                text: postDocument.querySelector('div[data-testid=post_message]').innerText,
+                image: [],
+            }
+            postDocument.querySelectorAll('.uiScaledImageContainer').forEach(one => {
+                data.image.push(one.children[0].src)
+            })
+            return data;
+        }, index);
+
+        return post;
+    }
+
+    async clickAllSeeMore() {
+        await this.page.evaluate(() => {
+            for (let i = 0; i < document.querySelectorAll('.see_more_link_inner').length; i++) {
+                try {
+                    document.querySelectorAll('.see_more_link_inner')[i].click()
+                } catch (error) {}
+            }
+        });
+    }
+
+    async scrollToBottom() {
+        await this.page.evaluate(() => {
+            window.scroll(0, 99999999)
+        });
     }
 
     delay(time) {
