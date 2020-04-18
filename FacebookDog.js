@@ -87,6 +87,11 @@ class FacebookDog {
         });
     }
 
+    async reload() {
+        await this.page.goto(this.url);
+        await this.delay(5000);
+    }
+
     delay(time) {
         return new Promise(function(resolve) { 
             setTimeout(resolve, time)
