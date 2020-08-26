@@ -14,6 +14,10 @@ const PostSchema = new mongoose.Schema({
   like: Number,
   text: String,
   utime: Number,
+  extract: [{
+    word: String,
+    weight: Number,
+  }],
 });
 
 const Post = mongoose.model('Post', PostSchema)
