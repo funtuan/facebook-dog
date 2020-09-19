@@ -22,9 +22,36 @@ class SearchEngine {
             }
         }).filter(one => one.rank !== 0)
         list.sort((a, b) => b.rank - a.rank)
-        console.log(list)
-        console.log(`共 ${list.length} 筆文章符合`)
+        return list.map(one => one.post)
     }
+
+    hot() {
+        const list = this.posts.filter(({utime}) => utime > ((+new Date()/1000) - 30*24*60*60))
+        list.sort((a, b) => b.like - a.like)
+
+        return list
+    }
+
+    new() {
+        const list = this.posts.map(one => one)
+        list.sort((a, b) => b.utime - a.utime)
+
+        return list
+    }
+
+    random() {
+        const list = this.posts.map(post => {
+            return {
+                post,
+                random: Math.random(),
+            }
+        })
+        list.sort((a, b) => b.random - a.random)
+
+        return list.map(one => one.post)
+    }
+
+    
 }
 
 
@@ -36,4 +63,6 @@ async function run() {
     searchEngine.search('學生證遺失')
 }
 
-run()
+// run()
+
+module.exports = SearchEngine
