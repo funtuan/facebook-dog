@@ -14,6 +14,9 @@ async function run() {
     console.log('posts', posts)
     searchEngine = new SearchEngine(posts)
 }
+setInterval(()=> {
+    run()
+}, 60*60*1000)
 run()
 
 const config = {
